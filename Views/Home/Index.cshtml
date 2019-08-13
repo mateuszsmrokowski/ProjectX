@@ -5,13 +5,20 @@
 <!DOCTYPE html>
 <html>
 <style>
+    html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
     .mydiv {
         position: absolute;
         z-index: 9;
         background-color: #f1f1f1;
         text-align: center;
+        vertical-align: top;
         border: 1px solid #d3d3d3;
-        width: 20%;
+        width: 90%;
+        height: 5%;
         cursor: move;
     }
 
@@ -27,7 +34,7 @@
         border-left: 6px solid green;
         height: 500px;
         position: absolute;
-        left: 20%;
+        left: 25%;
         margin-left: -3px;
         top: 0;
     }
@@ -36,7 +43,7 @@
         border-left: 6px solid green;
         height: 500px;
         position: absolute;
-        left: 40%;
+        left: 50%;
         margin-left: -3px;
         top: 0;
     }
@@ -45,7 +52,7 @@
         border-left: 6px solid green;
         height: 500px;
         position: absolute;
-        left: 60%;
+        left: 75%;
         margin-left: -3px;
         top: 0;
     }
@@ -61,7 +68,7 @@
 
     .sidenav {
         height: 100%;
-        width: 250px;
+        width: 350px;
         position: fixed;
         z-index: 1;
         top: 0;
@@ -75,32 +82,26 @@
 </style>
 <body onmousemove="mouse_position(event)">
     @{
-    var workersList = Model;
+        var workersList = Model;
     }
     <div class="main">
         <div class="vl"></div>
         <div class="v2"></div>
         <div class="v3"></div>
-        <div class="v4"></div>
 
-        <div id="-1" class="mydiv" onmouseenter="startDraging(-1)">
-            <p>Jan Kowalski</p>
-            <p>Jakieś add info</p>
-        </div>
 
         <div id="mySidenav" class="sidenav">
             <table>
-                <tr><th>Workers List</th></tr>
+                <tr><th></th></tr>
                 @for (var i = 0; i < Model.WorkersData.Count; i++)
                 {
-                <tr>
-                    <td>
-                        <div id="@i" onmouseenter="startDraging(@i)" class="mydiv">
-                            <p>@Model.WorkersData[i].Name @Model.WorkersData[i].Surname</p>
-                            <p>@Model.WorkersData[i].Position</p>
-                        </div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <div id="@i" onmouseenter="startDraging(@i)" class="mydiv">
+                                <span>@Model.WorkersData[i].Name @Model.WorkersData[i].Surname</span>
+                            </div>
+                        </td>
+                    </tr>
                 }
             </table>
 
@@ -112,13 +113,13 @@
         //Make the DIV element draggagle:
         document.addEventListener('mousemove', onMouseUpdate, false);
         document.addEventListener('mouseenter', onMouseUpdate, false);
+        var coulmnCounter = {};
+        var pageWidth = getWidth();
         function startDraging(id) {
             dragElement(document.getElementById(id), id);
-            console.log("Yes1");
         }
 
-    function dragElement(elmnt, save_id) {
-            console.log("Yes2");
+        function dragElement(elmnt, save_id) {
             var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             if (document.getElementById(elmnt.id + "header")) {
                 document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
@@ -156,37 +157,65 @@
                 e.preventDefault();
 
                 pos1 = pos3 - e.clientX;
-                if (elmnt.offsetLeft - pos1 < 0) {
-                    elmnt.style.left = getWidth() * 0 + "px";
+
+                //to check why last table go over board...
+                if (((elmnt.offsetLeft - pos1 >= 0) && (elmnt.offsetLeft - pos1 <= pageWidth * 0.125)) || (elmnt.offsetLeft - pos1 < 0)) {
+                    elmnt.style.left = pageWidth * 0 + "px";
+                    coulmnCounter[save_id] = 0;
                 }
-                if ((elmnt.offsetLeft - pos1 >= 0) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.10)) {
-                    elmnt.style.left = getWidth() * 0 + "px";
+                if ((elmnt.offsetLeft - pos1 > pageWidth * 0.125) && (elmnt.offsetLeft - pos1 <= pageWidth * 0.375)) {
+                    elmnt.style.left = pageWidth * 0.25 + "px";
+                    coulmnCounter[save_id] = 1;
                 }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.10) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.3)) {
-                    elmnt.style.left = getWidth() * 0.2 + "px";
+                if ((elmnt.offsetLeft - pos1 > pageWidth * 0.375) && (elmnt.offsetLeft - pos1 <= pageWidth * 0.625)) {
+                    elmnt.style.left = pageWidth * 0.5 + "px";
+                    coulmnCounter[save_id] = 2;
                 }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.3) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.5)) {
-                    elmnt.style.left = getWidth() * 0.4 + "px";
-                }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.5) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.7)) {
-                    elmnt.style.left = getWidth() * 0.6 + "px";
-                }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.7) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.9)) {
-                    elmnt.style.left = getWidth() * 0.8 + "px";
+                if (((elmnt.offsetLeft - pos1 > pageWidth * 0.625) && (elmnt.offsetLeft - pos1 <= pageWidth * 0.825)) || (elmnt.offsetLeft - pos1 > pageWidth * 0.825)) {
+                    elmnt.style.left = pageWidth * 0.75 + "px";
+                    coulmnCounter[save_id] = 3;
                 }
 
                 document.onmouseup = null;
                 document.onmousemove = null;
+                var countInColumns = [0, 0, 0, 0];
+
+                for (var key in coulmnCounter) {
+                    var value = coulmnCounter[key];
+                    console.log("On key " + key + " value is : " + value);
+                    countInColumns[value] += 1;
+                }
+
+                console.log(typeof getKeyByValue(coulmnCounter, 1) + "   " + "Si");
+                console.log(getKeyByValue(coulmnCounter, 1));
+                elmnt.style.top = getHeight() * (0.05 * (countInColumns[coulmnCounter[save_id]] - 1)) + "px";
+
+                //check if are not void table on board
+                for (var i = 0; i < 4; i++) {
+                    if (countInColumns[i] > 0) {
+                        var vals = getKeyByValue(coulmnCounter, i);
+                        if (vals.length > 1) {
+                            for (var j = 0; j < vals.length; j++) {
+                                document.getElementById(vals[j]).style.top = getHeight() * (0.05 * (j)) + "px";
+                            }
+                        }
+                        else if (vals.length == 1) {
+                            document.getElementById(vals[0]).style.top = 0 + "px";
+                        }
+                    }
+                }
+
                 elmnt.style.visibility = "visible";
+                elmnt.style.width = '25%';
                 document.getElementsByClassName("main")[0].appendChild(document.getElementById(save_id));
 
-                
             }
 
 
         }
 
         function getWidth() {
+            console.log("Raz dziffko");
             return Math.max(
                 document.body.scrollWidth,
                 document.documentElement.scrollWidth,
@@ -209,7 +238,7 @@
         function onMouseUpdate(e) {
             x = e.pageX;
             y = e.pageY;
-            if (x < getWidth() * 0.01) {
+            if (x < pageWidth * 0.01) {
                 openNav();
             }
             if (x > 250) {
@@ -218,12 +247,16 @@
 
         }
 
-    function openNav() {
-        document.getElementById("mySidenav").style.visibility = "visible";
+        function openNav() {
+            document.getElementById("mySidenav").style.visibility = "visible";
         }
 
         function closeNav() {
             document.getElementById("mySidenav").style.visibility = "hidden";
+        }
+
+        function getKeyByValue(object, value) {
+            return Object.keys(object).filter(key => object[key] === value);
         }
 
     </script>
