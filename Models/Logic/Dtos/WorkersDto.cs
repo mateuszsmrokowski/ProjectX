@@ -12,5 +12,7 @@ namespace ProjectX.Models.Logic.Dtos
         public string PhoneNumber { get; set; }
         public string Position { get; set; }
         public List<DateTime> DayOfWork { get; set; }
+        public string Unit { get; set; }
+        public string Shift { get; set; }
     }
 }
