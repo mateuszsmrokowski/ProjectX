@@ -1,16 +1,25 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@model ProjectX.ViewModels.Workers;
+
 <!DOCTYPE html>
-<html>
+
 <style>
-    #mydiv {
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .mydiv {
         position: absolute;
         z-index: 9;
-        background-color: #f1f1f1;
+        background-color: #6C98E1;
         text-align: center;
+        vertical-align: top;
         border: 1px solid #d3d3d3;
-        width: 20%;
+        width: 90%;
+        height: 5%;
         cursor: move;
     }
 
@@ -24,62 +33,225 @@
 
     .vl {
         border-left: 6px solid green;
-        height: 500px;
+        height: 5000px;
         position: absolute;
-        left: 20%;
+        left: 25%;
         margin-left: -3px;
-        top: 0;
+        top: 10%;
     }
 
     .v2 {
-        border-left: 6px solid green;
-        height: 500px;
+        border-left: 6px solid black;
+        height: 5000px;
         position: absolute;
-        left: 40%;
+        left: 50%;
         margin-left: -3px;
-        top: 0;
+        top: 10%;
     }
 
     .v3 {
         border-left: 6px solid green;
-        height: 500px;
+        height: 5000px;
         position: absolute;
-        left: 60%;
+        left: 75%;
         margin-left: -3px;
-        top: 0;
+        top: 10%;
     }
 
     .v4 {
         border-left: 6px solid green;
-        height: 500px;
+        height: 5000px;
         position: absolute;
         left: 80%;
         margin-left: -3px;
-        top: 0;
+        top: 10%;
     }
-</style>
-<body>
-    <div class="vl"></div>
-    <div class="v2"></div>
-    <div class="v3"></div>
-    <div class="v4"></div>
 
-    <div id="mydiv">
-        <p>Jan Kowalski</p>
-        <p>Jakieś add info</p>
+    .sidenav {
+        height: 100%;
+        width: 350px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+        visibility: hidden;
+    }
+
+    .dayLeft {
+        left: 25%;
+        text-align: center;
+        float: left;
+        position: relative;
+    }
+
+    .dayRight {
+        left: 25%;
+        text-align: center;
+        position: relative;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    td {
+        /*height: 500px;
+        width: 350px;*/
+    }
+
+    table.center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+        table.center td {
+            height: 500px;
+            width: 350px;
+        }
+</style>
+<html>
+<body>
+    @{
+        var workersList = Model;
+    }
+
+    <div class="main">
+        <center><h1>Obłożenie aunwdkanwdjnawkj dnakwfjnkaw</h1></center>
+        @*<h2><div class="dayLeft">Piąteg</div></h2>
+            <h2><div class="dayRight">Poniedziałeg</div></h2>
+            <div class="vl"></div>
+            <div class="v2"></div>
+            <div class="v3"></div>*@
+
+        <table class="center">
+            <tr>
+                <th colspan="2">Pon</th>
+                <th colspan="2">Wt</th>
+            </tr>
+            <tr>
+                <td id="1.1" onmouseover="enterMeeee('1','1')"></td>
+                <td id="1.2" onmouseover="enterMeeee('1','2')"></td>
+                <td id="1.3" onmouseover="enterMeeee('1','3')"></td>
+                <td id="1.4" onmouseover="enterMeeee('1','4')"></td>
+            </tr>
+            <tr>
+                <td id="2.1" onmouseover="enterMeeee('2','1')"></td>
+                <td id="2.2" onmouseover="enterMeeee('2','2')"></td>
+                <td id="2.3" onmouseover="enterMeeee('2','3')"></td>
+                <td id="2.4" onmouseover="enterMeeee('2','4')"></td>
+            </tr>
+            <tr>
+                <td id="3.1" onmouseover="enterMeeee('3','1')"></td>
+                <td id="3.2" onmouseover="enterMeeee('3','2')"></td>
+                <td id="3.3" onmouseover="enterMeeee('3','3')"></td>
+                <td id="3.4" onmouseover="enterMeeee('3','4')"></td>
+            </tr>
+            <tr>
+                <td id="4.1" onmouseover="enterMeeee('4','1')"></td>
+                <td id="4.2" onmouseover="enterMeeee('4','2')"></td>
+                <td id="4.3" onmouseover="enterMeeee('4','3')"></td>
+                <td id="4.4" onmouseover="enterMeeee('4','4')"></td>
+            </tr>
+            <tr>
+                <td id="5.1" onmouseover="enterMeeee('5','1')"></td>
+                <td id="5.2" onmouseover="enterMeeee('5','2')"></td>
+                <td id="5.3" onmouseover="enterMeeee('5','3')"></td>
+                <td id="5.4" onmouseover="enterMeeee('5','4')"></td>
+            </tr>
+            <tr>
+                <td id="6.1" onmouseover="enterMeeee('6','1')"></td>
+                <td id="6.2" onmouseover="enterMeeee('6','2')"></td>
+                <td id="6.3" onmouseover="enterMeeee('6','3')"></td>
+                <td id="6.4" onmouseover="enterMeeee('6','4')"></td>
+            </tr>
+            <tr>
+                <td id="7.1" onmouseover="enterMeeee('7','1')"></td>
+                <td id="7.2" onmouseover="enterMeeee('7','2')"></td>
+                <td id="7.3" onmouseover="enterMeeee('7','3')"></td>
+                <td id="7.4" onmouseover="enterMeeee('7','4')"></td>
+            </tr>
+            <tr>
+                <td id="8.1" onmouseover="enterMeeee('8','1')"></td>
+                <td id="8.2" onmouseover="enterMeeee('8','2')"></td>
+                <td id="8.3" onmouseover="enterMeeee('8','3')"></td>
+                <td id="8.4" onmouseover="enterMeeee('8','4')"></td>
+            </tr>
+            <tr>
+                <td id="9.1" onmouseover="enterMeeee('9','1')"></td>
+                <td id="9.2" onmouseover="enterMeeee('9','2')"></td>
+                <td id="9.3" onmouseover="enterMeeee('9','3')"></td>
+                <td id="9.4" onmouseover="enterMeeee('9','4')"></td>
+            </tr>
+            <tr>
+                <td id="10.1" onmouseover="enterMeeee('10','1')"></td>
+                <td id="10.2" onmouseover="enterMeeee('10','2')"></td>
+                <td id="10.3" onmouseover="enterMeeee('10','3')"></td>
+                <td id="10.4" onmouseover="enterMeeee('10','4')"></td>
+            </tr>
+        </table>
+
+
+
+        <div id="mySidenav" class="sidenav">
+            <table>
+                <tr><th></th></tr>
+                @for (var i = 0; i < Model.WorkersData.Count; i++)
+                {
+                    <tr id="-1">
+                        <td height="50px" id="-2">
+                            <div id="@i" onmouseenter="startDraging(@i)" class="mydiv">
+                                <div>@Model.WorkersData[i].Name @Model.WorkersData[i].Surname</div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+        </div>
+
+
     </div>
 
     <script>
-        //Make the DIV element draggagle:
-        dragElement(document.getElementById("mydiv"));
 
-        function dragElement(elmnt) {
+        //Make the DIV element draggagle:
+        document.addEventListener('mousemove', onMouseUpdate, false);
+        document.addEventListener('mouseenter', onMouseUpdate, false);
+        var arrayOfTables = Array(10).fill(0).map(() => Array(4).fill(0));
+        var actualCoordinatesColumn = [0, 0]
+        var lastAutoCreatedindexOfWorker = @Model.WorkersData.Count;
+        var isFirst = false;
+
+        function enterMeeee(x, y) {
+            actualCoordinatesColumn[0] = document.getElementById((x + "." + y).toString()).getBoundingClientRect().left;
+            actualCoordinatesColumn[1] = document.getElementById((x + "." + y).toString()).getBoundingClientRect().top;
+            actualCoordinatesColumn[2] = x;
+            actualCoordinatesColumn[3] = y;
+        }
+
+        function startDraging(id) {
+
+
+            var savedDiv = document.getElementById(id);
+            var rect = savedDiv.getBoundingClientRect();
+            var posOfDiv = [rect.left, rect.top];
+            dragElement(document.getElementById(id), id, firstTick = true, savedDiv.cloneNode(true), posOfDiv);
+
+        }
+
+        function dragElement(elmnt, save_id, firstTick, divClone, positionOfDiv) {
             var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            var firstTickValue = firstTick;
+            //var savedDocItem = savedDiv;
+            //var savedId = save_id;
+            var divToClone = divClone;
             if (document.getElementById(elmnt.id + "header")) {
-                /* if present, the header is where you move the DIV from:*/
                 document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
             } else {
-                /* otherwise, move the DIV from anywhere inside the DIV:*/
                 elmnt.onmousedown = dragMouseDown;
             }
 
@@ -89,22 +261,53 @@
                 // get the mouse cursor position at startup:
                 pos3 = e.clientX;
                 pos4 = e.clientY;
+                var parentNodeName = elmnt.parentNode.nodeName;
+                if (parentNodeName == "DIV") {
+                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1] -= 1;
+                }
+
+                if (parentNodeName == "TD") {
+                    isFirst = true;
+                }
+                else {
+                    isFirst = false;
+                }
                 document.onmouseup = closeDragElement;
-                // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
+
+
             }
 
             function elementDrag(e) {
                 e = e || window.event;
                 e.preventDefault();
                 // calculate the new cursor position:
+
+                document.getElementsByClassName("main")[0].appendChild(document.getElementById(save_id));
+                elmnt = document.getElementById(save_id);
+
+
+                //if (GetIfElementParentIsTable(save_id) == false) {
+                    //document.getElementsByClassName("sidenav")[0].appendChild(savedDocItem.cloneNode(true));
+                //}
+
+                //console.log(document.getElementsByClassName("sidenav").childNodes.length);
+                //console.log(document.getElementsByClassName("sidenav").childElementCount);
+
+                elmnt.style.visibility = "visible";
+                elmnt.style.width = '350px';
+                if (firstTickValue) {
+                    elmnt.style.top = e.clientY + window.scrollY + "px";
+                    firstTickValue = false;
+                }
+
+
                 pos1 = pos3 - e.clientX;
                 pos2 = pos4 - e.clientY;
                 pos3 = e.clientX;
                 pos4 = e.clientY;
                 // set the element's new position:
                 elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                //if
                 elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             }
 
@@ -112,50 +315,143 @@
                 /* stop moving when mouse button is released:*/
                 e = e || window.event;
                 e.preventDefault();
+
                 pos1 = pos3 - e.clientX;
-                console.log(elmnt.offsetLeft - pos1 + "    /     " + getWidth());
-                if (elmnt.offsetLeft - pos1 < 0) {
-                    elmnt.style.left = getWidth() * 0 + "px";
-                }
-                if ((elmnt.offsetLeft - pos1 >= 0) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.10)){
-                    elmnt.style.left = getWidth() * 0 + "px";
-                }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.10) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.3)) {
-                    elmnt.style.left = getWidth() * 0.2 + "px";
-                }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.3) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.5)){
-                    elmnt.style.left = getWidth() * 0.4 + "px";
-                }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.5) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.7)) {
-                    elmnt.style.left = getWidth() * 0.6 + "px";
-                }
-                if ((elmnt.offsetLeft - pos1 > getWidth() * 0.7) && (elmnt.offsetLeft - pos1 <= getWidth() * 1)) {
-                    elmnt.style.left = getWidth * 0.8 + "px";
-                }
+                pos2 = pos4 - e.clientY;
+
                 document.onmouseup = null;
                 document.onmousemove = null;
+
+                elmnt.style.left = actualCoordinatesColumn[0] + "px";
+                elmnt.style.top = actualCoordinatesColumn[1] + window.scrollY + "px";
+                arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1] += 1;
+
+                if (isFirst) {
+                    var navClass = document.getElementById(-2);
+                    navClass.appendChild(divToClone).setAttribute("id", lastAutoCreatedindexOfWorker)
+                    var newEle = document.getElementById(lastAutoCreatedindexOfWorker)
+                    newEle.setAttribute("onmouseenter", "startDraging("+lastAutoCreatedindexOfWorker+")");
+                    newEle.style.left = positionOfDiv[0] + "px";
+                    newEle.style.top = positionOfDiv[1] + "px";
+                    lastAutoCreatedindexOfWorker++;
+                }
+
+
+                //var countInColumns = [0, 0, 0, 0];
+
+                //for (var key in coulmnCounter) {
+                //    var value = coulmnCounter[key];
+                //    countInColumns[value] += 1;
+                //}
+
+                //elmnt.style.top = getHeight() * (0.05 * (countInColumns[coulmnCounter[save_id]] - 1)) + "px";
+
+                //var heightWithHeader = getHeight() * 0.1;
+                ////check if are not void table on board
+                //for (var i = 0; i < 4; i++) {
+                //    if (countInColumns[i] > 0) {
+                //        var vals = getKeyByValue(coulmnCounter, i);
+                //        if (vals.length > 1) {
+                //            for (var j = 0; j < vals.length; j++) {
+                //                document.getElementById(vals[j]).style.top = heightWithHeader + getHeight() * (0.05 * (j)) + "px";
+                //            }
+                //        }
+                //        else if (vals.length == 1) {
+                //            document.getElementById(vals[0]).style.top = heightWithHeader + "px";
+                //        }
+                //    }
+                //}
+
             }
 
-            function getWidth() {
-                return Math.max(
-                    document.body.scrollWidth,
-                    document.documentElement.scrollWidth,
-                    document.body.offsetWidth,
-                    document.documentElement.offsetWidth,
-                    document.documentElement.clientWidth
-                );
+
+        }
+
+        function getWidth() {
+            return Math.max(
+                //document.body.scrollWidth,
+                //document.documentElement.scrollWidth,
+                //document.body.offsetWidth,
+                //document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            );
+        }
+
+        function getHeight() {
+            return Math.max(
+                //document.body.scrollHeight,
+                //document.documentElement.scrollHeight,
+                //document.body.offsetHeight,
+                //document.documentElement.offsetHeight,
+                document.documentElement.clientHeight
+            );
+        }
+
+        function onMouseUpdate(e) {
+            x = e.pageX;
+            y = e.pageY;
+            if (x < getWidth() * 0.01) {
+                openNav();
+            }
+            if (x > 250) {
+                closeNav();
             }
 
-            function getHeight() {
-                return Math.max(
-                    document.body.scrollHeight,
-                    document.documentElement.scrollHeight,
-                    document.body.offsetHeight,
-                    document.documentElement.offsetHeight,
-                    document.documentElement.clientHeight
-                );
+        }
+
+        function openNav() {
+            document.getElementById("mySidenav").style.visibility = "visible";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.visibility = "hidden";
+        }
+
+        function getKeyByValue(object, value) {
+            return Object.keys(object).filter(key => object[key] === value);
+        }
+
+        function getCount(parent, getChildrensChildren) {
+            var relevantChildren = 0;
+            var children = parent.childNodes.length;
+            for (var i = 0; i < children; i++) {
+                if (parent.childNodes[i].nodeType != 3) {
+                    if (getChildrensChildren)
+                        relevantChildren += getCount(parent.childNodes[i], true);
+                    relevantChildren++;
+                }
+            }
+            return relevantChildren;
+        }
+
+        function GetIfElementParentIsTable(object) {
+            //var elm = document.getElementById(childID);
+            if (object.parentNode.constructor.name == "HTMLDivElement") {
+                return false;
+            }
+
+            if (object.parentNode.constructor.name == "HTMLTableCellElement") {
+                return true;
             }
         }
+
+        function changeNodeName(el,str){
+            var elNodeName = el.nodeName.toLowerCase();
+            var newString = el.outerHTML.trim().replace('<'+ elNodeName,'<'+str);
+
+            // To replace the end tag, we can't simply use replace()
+            // because, replace() will replace the first occurrence,
+            // which means if our element has a child element with the
+            // same node name the end tag of the *child element* will be
+            // replaced, not the parent element. So,
+
+            newString = newString.slice(0,newString.lastIndexOf('</'+str+'>'));
+            //now newString = "<button id='element'>Text"
+
+            newString = newString + "</" + str + ">";
+            el.outerHTML = newString;
+        }
+
     </script>
 
 </body>

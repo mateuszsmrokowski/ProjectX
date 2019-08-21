@@ -5,14 +5,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ProjectX.Models;
+using ProjectX.Models.Logic.MainBoard;
+using ProjectX.ViewModels;
 
 namespace ProjectX.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IGenerateWorkersList _generateWorkersList;
+
+        public HomeController(
+            IGenerateWorkersList generateWorkersList
+            )
+        {
+            _generateWorkersList = generateWorkersList;
+        }
         public IActionResult Index()
         {
-            return View();
+            var data = _generateWorkersList.GenerateWorkersList();
+
+            return PartialView(data);
         }
 
         public IActionResult About()
