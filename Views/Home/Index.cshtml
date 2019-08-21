@@ -201,8 +201,8 @@
                 <tr><th></th></tr>
                 @for (var i = 0; i < Model.WorkersData.Count; i++)
                 {
-                    <tr>
-                        <td height="50px">
+                    <tr id="-1">
+                        <td height="50px" id="-2">
                             <div id="@i" onmouseenter="startDraging(@i)" class="mydiv">
                                 <div>@Model.WorkersData[i].Name @Model.WorkersData[i].Surname</div>
                             </div>
@@ -222,8 +222,9 @@
         document.addEventListener('mousemove', onMouseUpdate, false);
         document.addEventListener('mouseenter', onMouseUpdate, false);
         var arrayOfTables = Array(10).fill(0).map(() => Array(4).fill(0));
-        console.log(arrayOfTables);
         var actualCoordinatesColumn = [0, 0]
+        var lastAutoCreatedindexOfWorker = @Model.WorkersData.Count;
+        var isFirst = false;
 
         function enterMeeee(x, y) {
             actualCoordinatesColumn[0] = document.getElementById((x + "." + y).toString()).getBoundingClientRect().left;
@@ -236,15 +237,18 @@
 
 
             var savedDiv = document.getElementById(id);
-            dragElement(document.getElementById(id), id, firstTick = true, savedDiv);
+            var rect = savedDiv.getBoundingClientRect();
+            var posOfDiv = [rect.left, rect.top];
+            dragElement(document.getElementById(id), id, firstTick = true, savedDiv.cloneNode(true), posOfDiv);
 
         }
 
-        function dragElement(elmnt, save_id, firstTick, savedDiv) {
+        function dragElement(elmnt, save_id, firstTick, divClone, positionOfDiv) {
             var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             var firstTickValue = firstTick;
-            var savedDocItem = savedDiv;
-            var savedId = save_id;
+            //var savedDocItem = savedDiv;
+            //var savedId = save_id;
+            var divToClone = divClone;
             if (document.getElementById(elmnt.id + "header")) {
                 document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
             } else {
@@ -257,16 +261,20 @@
                 // get the mouse cursor position at startup:
                 pos3 = e.clientX;
                 pos4 = e.clientY;
-                console.log("how many?");
                 var parentNodeName = elmnt.parentNode.nodeName;
                 if (parentNodeName == "DIV") {
                     arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1] -= 1;
                 }
+
+                if (parentNodeName == "TD") {
+                    isFirst = true;
+                }
+                else {
+                    isFirst = false;
+                }
                 document.onmouseup = closeDragElement;
-                // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
-                //could be
-                
+
 
             }
 
@@ -279,9 +287,9 @@
                 elmnt = document.getElementById(save_id);
 
 
-                if (GetIfElementParentIsTable(save_id) == false) {
+                //if (GetIfElementParentIsTable(save_id) == false) {
                     //document.getElementsByClassName("sidenav")[0].appendChild(savedDocItem.cloneNode(true));
-                }
+                //}
 
                 //console.log(document.getElementsByClassName("sidenav").childNodes.length);
                 //console.log(document.getElementsByClassName("sidenav").childElementCount);
@@ -311,38 +319,23 @@
                 pos1 = pos3 - e.clientX;
                 pos2 = pos4 - e.clientY;
 
-                //console.log(GetIfElementParentIsTable(save_id));
-
-
-
-                //to check why last table go over board...
-                //if (((elmnt.offsetLeft - pos1 >= 0) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.125)) || (elmnt.offsetLeft - pos1 < 0)) {
-                //    elmnt.style.left = getWidth() * 0 + "px";
-                //    coulmnCounter[save_id] = 0;
-                //}
-                //if ((elmnt.offsetLeft - pos1 > getWidth() * 0.125) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.375)) {
-                //    elmnt.style.left = getWidth() * 0.25 + "px";
-                //    coulmnCounter[save_id] = 1;
-                //}
-                //if ((elmnt.offsetLeft - pos1 > getWidth() * 0.375) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.625)) {
-                //    elmnt.style.left = getWidth() * 0.5 + "px";
-                //    coulmnCounter[save_id] = 2;
-                //}
-                //if (((elmnt.offsetLeft - pos1 > getWidth() * 0.625) && (elmnt.offsetLeft - pos1 <= getWidth() * 0.825)) || (elmnt.offsetLeft - pos1 > getWidth() * 0.825)) {
-                //    elmnt.style.left = getWidth() * 0.75 + "px";
-                //    coulmnCounter[save_id] = 3;
-                //}
-
-
-
                 document.onmouseup = null;
                 document.onmousemove = null;
 
                 elmnt.style.left = actualCoordinatesColumn[0] + "px";
                 elmnt.style.top = actualCoordinatesColumn[1] + window.scrollY + "px";
                 arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1] += 1;
-                console.log(arrayOfTables);
-                //console.log(arrayOfTables);
+
+                if (isFirst) {
+                    var navClass = document.getElementById(-2);
+                    navClass.appendChild(divToClone).setAttribute("id", lastAutoCreatedindexOfWorker)
+                    var newEle = document.getElementById(lastAutoCreatedindexOfWorker)
+                    newEle.setAttribute("onmouseenter", "startDraging("+lastAutoCreatedindexOfWorker+")");
+                    newEle.style.left = positionOfDiv[0] + "px";
+                    newEle.style.top = positionOfDiv[1] + "px";
+                    lastAutoCreatedindexOfWorker++;
+                }
+
 
                 //var countInColumns = [0, 0, 0, 0];
 
@@ -431,15 +424,32 @@
             return relevantChildren;
         }
 
-        function GetIfElementParentIsTable(childID) {
-            var elm = document.getElementById(childID);
-            if (elm.parentNode.constructor.name == "HTMLDivElement") {
+        function GetIfElementParentIsTable(object) {
+            //var elm = document.getElementById(childID);
+            if (object.parentNode.constructor.name == "HTMLDivElement") {
                 return false;
             }
 
-            if (elm.parentNode.constructor.name == "HTMLTableCellElement") {
+            if (object.parentNode.constructor.name == "HTMLTableCellElement") {
                 return true;
             }
+        }
+
+        function changeNodeName(el,str){
+            var elNodeName = el.nodeName.toLowerCase();
+            var newString = el.outerHTML.trim().replace('<'+ elNodeName,'<'+str);
+
+            // To replace the end tag, we can't simply use replace()
+            // because, replace() will replace the first occurrence,
+            // which means if our element has a child element with the
+            // same node name the end tag of the *child element* will be
+            // replaced, not the parent element. So,
+
+            newString = newString.slice(0,newString.lastIndexOf('</'+str+'>'));
+            //now newString = "<button id='element'>Text"
+
+            newString = newString + "</" + str + ">";
+            el.outerHTML = newString;
         }
 
     </script>
