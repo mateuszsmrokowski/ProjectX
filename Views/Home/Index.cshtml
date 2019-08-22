@@ -184,14 +184,6 @@
         var lastAutoCreatedindexOfWorker = @Model.WorkersData.Count;
         var isFirst = false;
 
-        //function enterMeeee(x, y) {
-        //    actualCoordinatesColumn[0] = document.getElementById((x + "." + y).toString()).getBoundingClientRect().left;
-        //    actualCoordinatesColumn[1] = document.getElementById((x + "." + y).toString()).getBoundingClientRect().top;
-        //    actualCoordinatesColumn[2] = x;
-        //    actualCoordinatesColumn[3] = y;
-        //    console.log(x + "," + y);
-       // }
-
         function startDraging(id) {
             var savedDiv = document.getElementById(id);
             var rect = savedDiv.getBoundingClientRect();
@@ -225,7 +217,6 @@
                         arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].splice(isElementExist, 1);
                     }
                 }
-                //console.log(arrayOfTables);
                 console.log(actualCoordinatesColumn[2] + "  |   " + actualCoordinatesColumn[3]);
 
                 if (parentNodeName == "TD") {
@@ -301,14 +292,9 @@
 
                 for (var i = 0; i < arrayOfTables.length; i++) {
                     for (var j = 0; j < arrayOfTables[0].length; j++) {
-                        //if (arrayOfTables[i][j][0] > 1) {
                             for (var y = 0; y < arrayOfTables[i][j][1].length; y++) {
-                                //if (arrayOfTables[i][j][1][y] == save_id) {
-                                //console.log(i + 1 + "   " + j + 1 + "   " + i + "   " + j);
                                     document.getElementById(arrayOfTables[i][j][1][y]).style.top = document.getElementById((parseInt(i+1) + "." + parseInt(j+1)).toString()).getBoundingClientRect().top + (50*y) + window.scrollY + "px";
-                                //}
                             }
-                        //}
                     }
                 }
 
@@ -389,7 +375,6 @@
         }
 
         function GetIfElementParentIsTable(object) {
-            //var elm = document.getElementById(childID);
             if (object.parentNode.constructor.name == "HTMLDivElement") {
                 return false;
             }
