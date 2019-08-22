@@ -132,66 +132,19 @@
                 <th colspan="2">Pon</th>
                 <th colspan="2">Wt</th>
             </tr>
-            <tr>
-                <td id="1.1" onmouseover="enterMeeee('1','1')"></td>
-                <td id="1.2" onmouseover="enterMeeee('1','2')"></td>
-                <td id="1.3" onmouseover="enterMeeee('1','3')"></td>
-                <td id="1.4" onmouseover="enterMeeee('1','4')"></td>
-            </tr>
-            <tr>
-                <td id="2.1" onmouseover="enterMeeee('2','1')"></td>
-                <td id="2.2" onmouseover="enterMeeee('2','2')"></td>
-                <td id="2.3" onmouseover="enterMeeee('2','3')"></td>
-                <td id="2.4" onmouseover="enterMeeee('2','4')"></td>
-            </tr>
-            <tr>
-                <td id="3.1" onmouseover="enterMeeee('3','1')"></td>
-                <td id="3.2" onmouseover="enterMeeee('3','2')"></td>
-                <td id="3.3" onmouseover="enterMeeee('3','3')"></td>
-                <td id="3.4" onmouseover="enterMeeee('3','4')"></td>
-            </tr>
-            <tr>
-                <td id="4.1" onmouseover="enterMeeee('4','1')"></td>
-                <td id="4.2" onmouseover="enterMeeee('4','2')"></td>
-                <td id="4.3" onmouseover="enterMeeee('4','3')"></td>
-                <td id="4.4" onmouseover="enterMeeee('4','4')"></td>
-            </tr>
-            <tr>
-                <td id="5.1" onmouseover="enterMeeee('5','1')"></td>
-                <td id="5.2" onmouseover="enterMeeee('5','2')"></td>
-                <td id="5.3" onmouseover="enterMeeee('5','3')"></td>
-                <td id="5.4" onmouseover="enterMeeee('5','4')"></td>
-            </tr>
-            <tr>
-                <td id="6.1" onmouseover="enterMeeee('6','1')"></td>
-                <td id="6.2" onmouseover="enterMeeee('6','2')"></td>
-                <td id="6.3" onmouseover="enterMeeee('6','3')"></td>
-                <td id="6.4" onmouseover="enterMeeee('6','4')"></td>
-            </tr>
-            <tr>
-                <td id="7.1" onmouseover="enterMeeee('7','1')"></td>
-                <td id="7.2" onmouseover="enterMeeee('7','2')"></td>
-                <td id="7.3" onmouseover="enterMeeee('7','3')"></td>
-                <td id="7.4" onmouseover="enterMeeee('7','4')"></td>
-            </tr>
-            <tr>
-                <td id="8.1" onmouseover="enterMeeee('8','1')"></td>
-                <td id="8.2" onmouseover="enterMeeee('8','2')"></td>
-                <td id="8.3" onmouseover="enterMeeee('8','3')"></td>
-                <td id="8.4" onmouseover="enterMeeee('8','4')"></td>
-            </tr>
-            <tr>
-                <td id="9.1" onmouseover="enterMeeee('9','1')"></td>
-                <td id="9.2" onmouseover="enterMeeee('9','2')"></td>
-                <td id="9.3" onmouseover="enterMeeee('9','3')"></td>
-                <td id="9.4" onmouseover="enterMeeee('9','4')"></td>
-            </tr>
-            <tr>
-                <td id="10.1" onmouseover="enterMeeee('10','1')"></td>
-                <td id="10.2" onmouseover="enterMeeee('10','2')"></td>
-                <td id="10.3" onmouseover="enterMeeee('10','3')"></td>
-                <td id="10.4" onmouseover="enterMeeee('10','4')"></td>
-            </tr>
+            @{
+                int x = 1;
+                int y = 1;
+                for (x = 1; x <= 10; x++)
+                {
+                    <tr>
+                        @for (y = 1; y <= 4; y++)
+                        {
+                            <td id="@x.@y" onmousemove="onMouseUpdate(null, @x, @y)"></td>
+                        }
+                    </tr>
+                }
+            }
         </table>
 
 
@@ -221,21 +174,17 @@
         //Make the DIV element draggagle:
         document.addEventListener('mousemove', onMouseUpdate, false);
         document.addEventListener('mouseenter', onMouseUpdate, false);
-        var arrayOfTables = Array(10).fill(0).map(() => Array(4).fill(0));
+        var arrayOfTables = Array(10).fill(0).map(() => Array(4).fill(0).map(() => Array(2).fill(0)));
+        for (var i = 0; i < arrayOfTables.length; i++) {
+            for (var j = 0; j < arrayOfTables[0].length; j++) {
+                    arrayOfTables[i][j][1] = [];
+                }
+            }
         var actualCoordinatesColumn = [0, 0]
         var lastAutoCreatedindexOfWorker = @Model.WorkersData.Count;
         var isFirst = false;
 
-        function enterMeeee(x, y) {
-            actualCoordinatesColumn[0] = document.getElementById((x + "." + y).toString()).getBoundingClientRect().left;
-            actualCoordinatesColumn[1] = document.getElementById((x + "." + y).toString()).getBoundingClientRect().top;
-            actualCoordinatesColumn[2] = x;
-            actualCoordinatesColumn[3] = y;
-        }
-
         function startDraging(id) {
-
-
             var savedDiv = document.getElementById(id);
             var rect = savedDiv.getBoundingClientRect();
             var posOfDiv = [rect.left, rect.top];
@@ -246,8 +195,6 @@
         function dragElement(elmnt, save_id, firstTick, divClone, positionOfDiv) {
             var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             var firstTickValue = firstTick;
-            //var savedDocItem = savedDiv;
-            //var savedId = save_id;
             var divToClone = divClone;
             if (document.getElementById(elmnt.id + "header")) {
                 document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
@@ -263,8 +210,14 @@
                 pos4 = e.clientY;
                 var parentNodeName = elmnt.parentNode.nodeName;
                 if (parentNodeName == "DIV") {
-                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1] -= 1;
+                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][0] -= 1;
+                    var isElementExist = arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].indexOf(parseInt(save_id));
+                    console.log(isElementExist + " <--- this is it and this is id " + save_id + " and this is array " + arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1] + " Coords " + parseInt(actualCoordinatesColumn[2] - 1) + "|" + parseInt(actualCoordinatesColumn[3] - 1));
+                    if (isElementExist > -1) {
+                        arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].splice(isElementExist, 1);
+                    }
                 }
+                console.log(actualCoordinatesColumn[2] + "  |   " + actualCoordinatesColumn[3]);
 
                 if (parentNodeName == "TD") {
                     isFirst = true;
@@ -285,15 +238,6 @@
 
                 document.getElementsByClassName("main")[0].appendChild(document.getElementById(save_id));
                 elmnt = document.getElementById(save_id);
-
-
-                //if (GetIfElementParentIsTable(save_id) == false) {
-                    //document.getElementsByClassName("sidenav")[0].appendChild(savedDocItem.cloneNode(true));
-                //}
-
-                //console.log(document.getElementsByClassName("sidenav").childNodes.length);
-                //console.log(document.getElementsByClassName("sidenav").childElementCount);
-
                 elmnt.style.visibility = "visible";
                 elmnt.style.width = '350px';
                 if (firstTickValue) {
@@ -324,7 +268,17 @@
 
                 elmnt.style.left = actualCoordinatesColumn[0] + "px";
                 elmnt.style.top = actualCoordinatesColumn[1] + window.scrollY + "px";
-                arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1] += 1;
+
+
+                if (arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].indexOf(save_id) == -1) {
+
+                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][0] += 1;
+                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].push(save_id);
+                }
+
+
+
+                console.log(arrayOfTables[0][0][1] + " , " + arrayOfTables[0][1][1] + " , " + arrayOfTables[0][2][1] + " , " + arrayOfTables[0][3][1])
 
                 if (isFirst) {
                     var navClass = document.getElementById(-2);
@@ -336,31 +290,13 @@
                     lastAutoCreatedindexOfWorker++;
                 }
 
-
-                //var countInColumns = [0, 0, 0, 0];
-
-                //for (var key in coulmnCounter) {
-                //    var value = coulmnCounter[key];
-                //    countInColumns[value] += 1;
-                //}
-
-                //elmnt.style.top = getHeight() * (0.05 * (countInColumns[coulmnCounter[save_id]] - 1)) + "px";
-
-                //var heightWithHeader = getHeight() * 0.1;
-                ////check if are not void table on board
-                //for (var i = 0; i < 4; i++) {
-                //    if (countInColumns[i] > 0) {
-                //        var vals = getKeyByValue(coulmnCounter, i);
-                //        if (vals.length > 1) {
-                //            for (var j = 0; j < vals.length; j++) {
-                //                document.getElementById(vals[j]).style.top = heightWithHeader + getHeight() * (0.05 * (j)) + "px";
-                //            }
-                //        }
-                //        else if (vals.length == 1) {
-                //            document.getElementById(vals[0]).style.top = heightWithHeader + "px";
-                //        }
-                //    }
-                //}
+                for (var i = 0; i < arrayOfTables.length; i++) {
+                    for (var j = 0; j < arrayOfTables[0].length; j++) {
+                            for (var y = 0; y < arrayOfTables[i][j][1].length; y++) {
+                                    document.getElementById(arrayOfTables[i][j][1][y]).style.top = document.getElementById((parseInt(i+1) + "." + parseInt(j+1)).toString()).getBoundingClientRect().top + (50*y) + window.scrollY + "px";
+                            }
+                    }
+                }
 
             }
 
@@ -387,15 +323,29 @@
             );
         }
 
-        function onMouseUpdate(e) {
-            x = e.pageX;
-            y = e.pageY;
-            if (x < getWidth() * 0.01) {
-                openNav();
+        function onMouseUpdate(e, xx = null, yy = null) {
+
+            if ((e != null) && (xx == null) && (yy == null)) {
+                x = e.pageX;
+                y = e.pageY;
+
+                if (x < getWidth() * 0.01) {
+                    openNav();
+                }
+                if (x > 250) {
+                    closeNav();
+                }
             }
-            if (x > 250) {
-                closeNav();
+
+
+             if ((xx != null) && (yy != null)) {
+                actualCoordinatesColumn[0] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().left;
+                actualCoordinatesColumn[1] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().top;
+                actualCoordinatesColumn[2] = xx;
+                actualCoordinatesColumn[3] = yy;
             }
+
+            console.log(actualCoordinatesColumn[2] + "  |   " + actualCoordinatesColumn[3]);
 
         }
 
@@ -425,7 +375,6 @@
         }
 
         function GetIfElementParentIsTable(object) {
-            //var elm = document.getElementById(childID);
             if (object.parentNode.constructor.name == "HTMLDivElement") {
                 return false;
             }
@@ -435,22 +384,13 @@
             }
         }
 
-        function changeNodeName(el,str){
-            var elNodeName = el.nodeName.toLowerCase();
-            var newString = el.outerHTML.trim().replace('<'+ elNodeName,'<'+str);
+        function arrayRemove(arr, value) {
 
-            // To replace the end tag, we can't simply use replace()
-            // because, replace() will replace the first occurrence,
-            // which means if our element has a child element with the
-            // same node name the end tag of the *child element* will be
-            // replaced, not the parent element. So,
+        return arr.filter(function(ele){
+            return ele != value;
+        });
 
-            newString = newString.slice(0,newString.lastIndexOf('</'+str+'>'));
-            //now newString = "<button id='element'>Text"
-
-            newString = newString + "</" + str + ">";
-            el.outerHTML = newString;
-        }
+}
 
     </script>
 
