@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ProjectX.Data;
 using ProjectX.Models;
 using ProjectX.Models.Logic.MainBoard;
 using ProjectX.ViewModels;
@@ -12,19 +13,22 @@ namespace ProjectX.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGenerateWorkersList _generateWorkersList;
+        private readonly IGenerateWorkersList _generateWorkersData;
+        private readonly WorkersContext _context;
 
         public HomeController(
-            IGenerateWorkersList generateWorkersList
+            IGenerateWorkersList generateWorkersList,
+            WorkersContext context
             )
         {
-            _generateWorkersList = generateWorkersList;
+            _generateWorkersData = generateWorkersList;
+            _context = context;
         }
         public IActionResult Index()
         {
-            var data = _generateWorkersList.GenerateWorkersList();
+            var viewModel = _generateWorkersData.GenerateWorkersData(_context);
 
-            return PartialView(data);
+            return PartialView(viewModel);
         }
 
         public IActionResult About()

@@ -1,8 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model ProjectX.ViewModels.Workers;
+@model ProjectX.ViewModels.WorkersViewModel;
 
+<script src="~/js/multithread.js" type="text/javascript"></script>
 <!DOCTYPE html>
 
 <style>
@@ -140,7 +141,7 @@
                     <tr>
                         @for (y = 1; y <= 4; y++)
                         {
-                            <td id="@x.@y" onmousemove="onMouseUpdate(null, @x, @y)"></td>
+                            <td id="@x.@y" onmouseover="onMouseUpdateInTable(@x, @y)"></td>
                         }
                     </tr>
                 }
@@ -152,12 +153,12 @@
         <div id="mySidenav" class="sidenav">
             <table>
                 <tr><th></th></tr>
-                @for (var i = 0; i < Model.WorkersData.Count; i++)
+                @for (var i = 0; i < Model.AllWorkersList.Count; i++)
                 {
                     <tr id="-1">
                         <td height="50px" id="-2">
                             <div id="@i" onmouseenter="startDraging(@i)" class="mydiv">
-                                <div>@Model.WorkersData[i].Name @Model.WorkersData[i].Surname</div>
+                                <div>@Model.AllWorkersList[i].Name @Model.AllWorkersList[i].Surname</div>
                             </div>
                         </td>
                     </tr>
@@ -171,17 +172,34 @@
 
     <script>
 
+        var num_threads = 2;
+        var MT = new Multithread(num_threads);
+
+        funcInADifferentThread = MT.process(
+            function (a, b) { return a + b; },
+            function (r) { console.log(r) },
+            console.log("Si?")
+        );
+
+        // Nothing has happened,
+        //funcInADifferentThread has not executed yet...
+
+        //funcInADifferentThread(1, 2);
+        //console.log('Before or after?');
+
+
+
         //Make the DIV element draggagle:
         document.addEventListener('mousemove', onMouseUpdate, false);
         document.addEventListener('mouseenter', onMouseUpdate, false);
         var arrayOfTables = Array(10).fill(0).map(() => Array(4).fill(0).map(() => Array(2).fill(0)));
         for (var i = 0; i < arrayOfTables.length; i++) {
             for (var j = 0; j < arrayOfTables[0].length; j++) {
-                    arrayOfTables[i][j][1] = [];
+                arrayOfTables[i][j][1] = [];
                 }
             }
         var actualCoordinatesColumn = [0, 0]
-        var lastAutoCreatedindexOfWorker = @Model.WorkersData.Count;
+        var lastAutoCreatedindexOfWorker = @Model.AllWorkersList.Count;
         var isFirst = false;
 
         function startDraging(id) {
@@ -235,7 +253,6 @@
                 e = e || window.event;
                 e.preventDefault();
                 // calculate the new cursor position:
-
                 document.getElementsByClassName("main")[0].appendChild(document.getElementById(save_id));
                 elmnt = document.getElementById(save_id);
                 elmnt.style.visibility = "visible";
@@ -269,16 +286,11 @@
                 elmnt.style.left = actualCoordinatesColumn[0] + "px";
                 elmnt.style.top = actualCoordinatesColumn[1] + window.scrollY + "px";
 
-
                 if (arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].indexOf(save_id) == -1) {
 
                     arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][0] += 1;
                     arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].push(save_id);
                 }
-
-
-
-                console.log(arrayOfTables[0][0][1] + " , " + arrayOfTables[0][1][1] + " , " + arrayOfTables[0][2][1] + " , " + arrayOfTables[0][3][1])
 
                 if (isFirst) {
                     var navClass = document.getElementById(-2);
@@ -338,12 +350,25 @@
             }
 
 
-             if ((xx != null) && (yy != null)) {
-                actualCoordinatesColumn[0] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().left;
-                actualCoordinatesColumn[1] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().top;
-                actualCoordinatesColumn[2] = xx;
-                actualCoordinatesColumn[3] = yy;
-            }
+            //if ((xx != null) && (yy != null)) {
+            //    if ((document.getElementById((xx + "." + yy).toString()) != null) && (document.getElementById((xx + "." + yy).toString()) != null)) {
+            //        actualCoordinatesColumn[0] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().left;
+            //        actualCoordinatesColumn[1] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().top;
+            //        actualCoordinatesColumn[2] = xx;
+            //        actualCoordinatesColumn[3] = yy;
+            //    }
+
+            //}
+
+
+        }
+
+        function onMouseUpdateInTable(xx, yy) {
+
+            actualCoordinatesColumn[0] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().left;
+            actualCoordinatesColumn[1] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().top;
+            actualCoordinatesColumn[2] = xx;
+            actualCoordinatesColumn[3] = yy;
 
             console.log(actualCoordinatesColumn[2] + "  |   " + actualCoordinatesColumn[3]);
 
