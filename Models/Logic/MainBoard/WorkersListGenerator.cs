@@ -64,28 +64,36 @@ namespace ProjectX.Models.Logic.MainBoard
             //workersContext.Workers.Add(workersData);
             var dateTime = DateTime.Now;
 
-            var allWorkersList = workersContext.Workers.Select(t => t);
-            var dayId = workersContext.Days
-                .Where(y => y.Day.Day == dateTime.Day || y.Day.Day == dateTime.AddDays(1).Day);
+            var allWorkersList = workersContext.Workers.Select(t => t).ToList();
+            var daysOfWorkIds = workersContext.Days
+                //.Where(y => y.Day.Day == dateTime.Day || y.Day.Day == dateTime.AddDays(1).Day)
+                .ToList();
 
-            var joinAll = workersContext.DaysOfWork.Select(t => t);
+            var dayOfWorkData = workersContext.DaysOfWork.Select(t => t).ToList();
+
+            var workersAssigmentData = dayOfWorkData.Join(daysOfWorkIds,
+                dw => dw.DayId,
+                d => d.Id,
+                (dw, d) => new { d.Day, dw.Unity, dw.Shift, dw.WorkerId })
+                .Join(allWorkersList,
+                dw => dw.WorkerId,
+                wc => wc.Id,
+                (dw, wc) => new { wc.Name, wc.Surname, wc.Position, dw.Day, dw.Shift, dw.Unity })
+                .Select( x => new WorkersAssigmentData { Name = x.Name, Surname = x.Surname, Position = x.Position, Shift = x.Shift, Unity = x.Unity, Day = x.Day })
+                .ToList();
+          
 
 
-            //.Join(allWorkersList, Workerss => Workerss, Workers => Workers.Id, (Workerss, Workers) => new { WorkerName = Workers.Name, UnityRank = Workerss. });
-            var query = from i in joinAll
-                        join x in dayId on i.DayId equals x.Id
-                        join y in allWorkersList on i.WorkerId equals y.Id
-                        select new { y.Name, y.Surname, y.Position, i.Shift, i.Unity, x.Day };
             var data = new WorkersViewModel
             {
-                AllWorkersList = allWorkersList.ToList(),
-                //WorkersAssigmentData = query.ToList();
+                AllWorkersList = allWorkersList,
+                WorkersAssigmentData = workersAssigmentData
             };
 
             return data;
         }
 
-}
+    }
 
 
 }
