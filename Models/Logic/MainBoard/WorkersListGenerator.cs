@@ -78,19 +78,16 @@ namespace ProjectX.Models.Logic.MainBoard
                 .Join(allWorkersList,
                 dw => dw.WorkerId,
                 wc => wc.Id,
-                (dw, wc) => new { wc.Name, wc.Surname, wc.Position, dw.Day, dw.Shift, dw.Unity })
-                .Select( x => new WorkersAssigmentData { Name = x.Name, Surname = x.Surname, Position = x.Position, Shift = x.Shift, Unity = x.Unity, Day = x.Day })
+                (dw, wc) => new { wc.Id, wc.Name, wc.Surname, wc.Position, dw.Day, dw.Shift, dw.Unity })
+                .Select( x => new WorkersAssigmentData { Id = x.Id, Name = x.Name, Surname = x.Surname, Position = x.Position, Shift = x.Shift, Unity = x.Unity, Day = x.Day })
                 .ToList();
-          
 
-
-            var data = new WorkersViewModel
+            return new WorkersViewModel
             {
                 AllWorkersList = allWorkersList,
                 WorkersAssigmentData = workersAssigmentData
             };
 
-            return data;
         }
 
     }

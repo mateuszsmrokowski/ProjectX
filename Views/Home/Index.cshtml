@@ -113,11 +113,17 @@
             height: 500px;
             width: 350px;
         }
+
+    .shift-place {
+        text-align: center;
+        vertical-align: top;
+    }
 </style>
 <html>
-<body>
+<body onclick="xxx()">
     @{
         var workersList = Model;
+        var assigmentData = Model.WorkersAssigmentData;
     }
 
     <div class="main">
@@ -141,7 +147,78 @@
                     <tr>
                         @for (y = 1; y <= 4; y++)
                         {
-                            <td id="@x.@y" onmouseover="onMouseUpdateInTable(@x, @y)"></td>
+                            <td id="@x.@y" onmouseover="onMouseUpdateInTable(@x, @y)" class="shift-place">
+                                @if (x <= 8)
+                                {
+                                    @if ((x == 1) || (x == 2))
+                                    {
+                                        <span style="white-space: pre-line">@Html.Raw("ZM. 'G' 7:00 - 14:30\r")</span>
+                                    }
+                                    @if ((x == 3) || (x == 4))
+                                    {
+                                        <span style="white-space: pre-line">@Html.Raw("ZM. 'B' 12:00 - 19:30\r")</span>
+                                    }
+                                    @if ((x == 5) || (x == 6))
+                                    {
+                                        <span style="white-space: pre-line">@Html.Raw("ZM. 'T' 17:00 - 0:30\r")</span>
+                                    }
+                                    @if ((x == 7) || (x == 8))
+                                    {
+                                        <span style="white-space: pre-line">@Html.Raw("ZM. 'D' 24:00 - 7:30\r")</span>
+                                    }
+
+                                    @if (x % 2 == 0)
+                                    {
+                                        @Html.Raw("REZERWA");
+
+                                    }
+                                    else
+                                    {
+                                        @if ((y == 1) || (y == 3))
+                                        {
+                                            @Html.Raw("Zastęp NR 1");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("Zastęp NR 2");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (x == 9)
+                                    {
+                                        if (y < 4)
+                                        {
+                                            @Html.Raw("URLOP");
+
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("BAD. RATOWNICZE");
+                                        }
+                                    }
+                                    if (x == 10)
+                                    {
+                                        switch (y)
+                                        {
+                                            case 1:
+                                                @Html.Raw("L-4");
+                                                break;
+                                            case 2:
+                                                @Html.Raw("ĆWICZENIA");
+                                                break;
+                                            case 3:
+                                                @Html.Raw("L-4");
+                                                break;
+                                            case 4:
+                                                @Html.Raw("POGOTOWIE");
+                                                break;
+                                        }
+                                    }
+                                }
+
+                            </td>
                         }
                     </tr>
                 }
@@ -173,20 +250,14 @@
     <script>
 
         var num_threads = 2;
-        var MT = new Multithread(num_threads);
+                                var MT = new Multithread(num_threads);
 
-        funcInADifferentThread = MT.process(
-            function (a, b) { return a + b; },
-            function (r) { console.log(r) },
-            console.log("Si?")
+
+
+                                funcInADifferentThread = MT.process(
+                                    function (a, b) { return a + b; },
+            function (r) { console.log(r) }
         );
-
-        // Nothing has happened,
-        //funcInADifferentThread has not executed yet...
-
-        //funcInADifferentThread(1, 2);
-        //console.log('Before or after?');
-
 
 
         //Make the DIV element draggagle:
@@ -304,9 +375,9 @@
 
                 for (var i = 0; i < arrayOfTables.length; i++) {
                     for (var j = 0; j < arrayOfTables[0].length; j++) {
-                            for (var y = 0; y < arrayOfTables[i][j][1].length; y++) {
-                                    document.getElementById(arrayOfTables[i][j][1][y]).style.top = document.getElementById((parseInt(i+1) + "." + parseInt(j+1)).toString()).getBoundingClientRect().top + (50*y) + window.scrollY + "px";
-                            }
+                        for (var y = 0; y < arrayOfTables[i][j][1].length; y++) {
+                            document.getElementById(arrayOfTables[i][j][1][y]).style.top = document.getElementById((parseInt(i+1) + "." + parseInt(j+1)).toString()).getBoundingClientRect().top + (50*y) + window.scrollY + "px";
+                        }
                     }
                 }
 
@@ -314,6 +385,27 @@
 
 
         }
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+
+            console.log('DOM fully loaded and parsed');
+
+            var workersAssigmentData = [];
+            @foreach(var xy in Model.WorkersAssigmentData)
+            {
+                @:workersAssigmentData.push(@Json.Serialize(xy));
+            };
+
+            for (var ii = 0; ii < workersAssigmentData.length; ii++) {
+                console.log(workersAssigmentData[ii]);
+            };
+
+
+
+            ///// Generate workers from database
+
+
+        });
 
         function getWidth() {
             return Math.max(
@@ -348,18 +440,6 @@
                     closeNav();
                 }
             }
-
-
-            //if ((xx != null) && (yy != null)) {
-            //    if ((document.getElementById((xx + "." + yy).toString()) != null) && (document.getElementById((xx + "." + yy).toString()) != null)) {
-            //        actualCoordinatesColumn[0] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().left;
-            //        actualCoordinatesColumn[1] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().top;
-            //        actualCoordinatesColumn[2] = xx;
-            //        actualCoordinatesColumn[3] = yy;
-            //    }
-
-            //}
-
 
         }
 
@@ -411,11 +491,13 @@
 
         function arrayRemove(arr, value) {
 
-        return arr.filter(function(ele){
-            return ele != value;
-        });
+            return arr.filter(function(ele){
+                return ele != value;
+            });
 
-}
+        }
+
+
 
     </script>
 
