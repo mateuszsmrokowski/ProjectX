@@ -354,7 +354,7 @@
 
                 if (isFirst) {
                     var navClass = document.getElementById(-2);
-                    navClass.appendChild(divToClone).setAttribute("id", lastAutoCreatedindexOfWorker)
+                    navClass.appendChild(divToClone).setAttribute("id", lastAutoCreatedindexOfWorker);
                     var newEle = document.getElementById(lastAutoCreatedindexOfWorker)
                     newEle.setAttribute("onmouseenter", "startDraging("+lastAutoCreatedindexOfWorker+")");
                     newEle.style.left = positionOfDiv[0] + "px";
@@ -386,8 +386,26 @@
             };
 
             for (var ii = 0; ii < workersAssigmentData.length; ii++) {
-                //console.log(workersAssigmentData[ii]);
-
+                console.log(workersAssigmentData[ii]);
+                console.log(typeof workersAssigmentData[ii]);
+                //var savedDiv = document.getElementById(ii);
+                //var newElem = savedDiv.cloneNode();
+                //document.getElementsByClassName("main")[0].appendChild(newElem).setAttribute("id", lastAutoCreatedindexOfWorker);
+                //elmnt = document.getElementById(ii);
+                //elmnt.style.visibility = "visible";
+                //elmnt.style.width = '350px';
+                //elmnt.setAttribute("onmouseenter", "startDraging("+lastAutoCreatedindexOfWorker+")");
+                //elmnt.style.left = positionOfDiv[0] + "px";
+                //elmnt.style.top = positionOfDiv[1] + "px";
+                //lastAutoCreatedindexOfWorker++;
+                var today = new Date;
+                today = today.setHours(0, 0, 0, 0);
+                console.log(workersAssigmentData[ii].day)
+                var workerDay = new Date(workersAssigmentData[ii].day);
+                workerDay = workerDay.setHours(0, 0, 0, 0);
+                if (workerDay == today) {
+                    console.log("test");
+                };
             };
 
 
