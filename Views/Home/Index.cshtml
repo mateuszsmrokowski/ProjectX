@@ -406,6 +406,12 @@
                 if (workerDay == today) {
                     console.log("test");
                 };
+                console.log(today + " before fix ");
+                today = addDays(today, 1).getTime();
+                console.log(today + " fixed ");
+                if(workerDay == today) {
+                    console.log("test tomorrow");
+                };
             };
 
 
@@ -503,6 +509,12 @@
                 return ele != value;
             });
 
+        }
+
+        function addDays(day, days) {
+            var date = new Date(day.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
         }
 
 
