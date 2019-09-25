@@ -14,6 +14,7 @@ namespace ProjectX.Models
         public string Position { get; set; }
         public int Unity { get; set; }
         public int Shift { get; set; }
+        public int Reserv { get; set; }
         public DateTime Day { get; set; }
     }
 }

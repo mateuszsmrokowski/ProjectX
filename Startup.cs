@@ -35,6 +35,7 @@ namespace ProjectX
             });
 
             services.AddSingleton<IGenerateWorkersList, WorkersListGenerator>();
+            services.AddSingleton<IWorkerBoardUpdate, WorkerBoardUpdate>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<WorkersContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }

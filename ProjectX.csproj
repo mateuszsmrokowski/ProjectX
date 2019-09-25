@@ -30,6 +30,7 @@
     <None Include="bower_components\jquery\src\sizzle\dist\sizzle.min.js" />
     <None Include="bower_components\spectrum\spectrum.js" />
     <None Include="bower_components\spinjs\spin.js" />
+    <None Include="wwwroot\js\boardScripts.js" />
     <None Include="wwwroot\js\multithread.js" />
   </ItemGroup>
 

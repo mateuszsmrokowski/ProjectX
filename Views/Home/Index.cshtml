@@ -4,6 +4,7 @@
 @model ProjectX.ViewModels.WorkersViewModel;
 
 <script src="~/js/multithread.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <!DOCTYPE html>
 
 <style>
@@ -120,7 +121,7 @@
     }
 </style>
 <html>
-<body onclick="xxx()">
+<body>
     @{
         var workersList = Model;
         var assigmentData = Model.WorkersAssigmentData;
@@ -128,11 +129,6 @@
 
     <div class="main">
         <center><h1>Obłożenie na kopalni XxX</h1></center>
-        @*<h2><div class="dayLeft">Piąteg</div></h2>
-            <h2><div class="dayRight">Poniedziałeg</div></h2>
-            <div class="vl"></div>
-            <div class="v2"></div>
-            <div class="v3"></div>*@
 
         <table class="center">
             <tr>
@@ -233,8 +229,8 @@
                 @for (var i = 0; i < Model.AllWorkersList.Count; i++)
                 {
                     <tr>
-                        <td height="50px">
-                            <div id="@i" onmouseenter="startDraging(@i)" class="mydiv">
+                        <td height="50px" id="sideNavTd">
+                            <div id="@i" onmouseenter="startDraging(@i)" class="mydiv" dbWorkerId="@i">
                                 <div>@Model.AllWorkersList[i].Name @Model.AllWorkersList[i].Surname</div>
                             </div>
                         </td>
@@ -246,280 +242,331 @@
 
 
     </div>
-
-    <script>
-
-        //Make the DIV element draggagle:
-        document.addEventListener('mousemove', onMouseUpdate, false);
-        document.addEventListener('mouseenter', onMouseUpdate, false);
-        var arrayOfTables = Array(10).fill(0).map(() => Array(4).fill(0).map(() => Array(2).fill(0)));
-        for (var i = 0; i < arrayOfTables.length; i++) {
-            for (var j = 0; j < arrayOfTables[0].length; j++) {
-                arrayOfTables[i][j][1] = [];
-                }
-            }
-        var actualCoordinatesColumn = [0, 0]
-        var lastAutoCreatedindexOfWorker = @Model.AllWorkersList.Count;
-        var isFirst = false;
-
-        function startDraging(id) {
-            var savedDiv = document.getElementById(id);
-            var rect = savedDiv.getBoundingClientRect();
-            var posOfDiv = [rect.left, rect.top];
-            dragElement(document.getElementById(id), id, firstTick = true, savedDiv.cloneNode(true), posOfDiv);
-
-        }
-
-        function dragElement(elmnt, save_id, firstTick, divClone, positionOfDiv) {
-            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            var firstTickValue = firstTick;
-            var divToClone = divClone;
-            if (document.getElementById(elmnt.id + "header")) {
-                document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-            } else {
-                elmnt.onmousedown = dragMouseDown;
-            }
-
-            function dragMouseDown(e) {
-                e = e || window.event;
-                e.preventDefault();
-                // get the mouse cursor position at startup:
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                var parentNodeName = elmnt.parentNode.nodeName;
-                if (parentNodeName == "DIV") {
-                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][0] -= 1;
-                    var isElementExist = arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].indexOf(parseInt(save_id));
-                    console.log(isElementExist + " <--- this is it and this is id " + save_id + " and this is array " + arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1] + " Coords " + parseInt(actualCoordinatesColumn[2] - 1) + "|" + parseInt(actualCoordinatesColumn[3] - 1));
-                    if (isElementExist > -1) {
-                        arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].splice(isElementExist, 1);
-                    }
-                }
-                console.log(actualCoordinatesColumn[2] + "  |   " + actualCoordinatesColumn[3]);
-
-                if (parentNodeName == "TD") {
-                    isFirst = true;
-                }
-                else {
-                    isFirst = false;
-                }
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
-
-
-            }
-
-            function elementDrag(e) {
-                e = e || window.event;
-                e.preventDefault();
-                // calculate the new cursor position:
-                document.getElementsByClassName("main")[0].appendChild(document.getElementById(save_id));
-                elmnt = document.getElementById(save_id);
-                elmnt.style.visibility = "visible";
-                elmnt.style.width = '350px';
-                if (firstTickValue) {
-                    elmnt.style.top = e.clientY + window.scrollY + "px";
-                    firstTickValue = false;
-                }
-
-
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                // set the element's new position:
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-            }
-
-            function closeDragElement(e) {
-                /* stop moving when mouse button is released:*/
-                e = e || window.event;
-                e.preventDefault();
-
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-
-                document.onmouseup = null;
-                document.onmousemove = null;
-
-                elmnt.style.left = actualCoordinatesColumn[0] + "px";
-                elmnt.style.top = actualCoordinatesColumn[1] + window.scrollY + "px";
-
-                if (arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].indexOf(save_id) == -1) {
-
-                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][0] += 1;
-                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].push(save_id);
-                }
-
-                if (isFirst) {
-                    var navClass = document.getElementById(-2);
-                    navClass.appendChild(divToClone).setAttribute("id", lastAutoCreatedindexOfWorker);
-                    var newEle = document.getElementById(lastAutoCreatedindexOfWorker)
-                    newEle.setAttribute("onmouseenter", "startDraging("+lastAutoCreatedindexOfWorker+")");
-                    newEle.style.left = positionOfDiv[0] + "px";
-                    newEle.style.top = positionOfDiv[1] + "px";
-                    lastAutoCreatedindexOfWorker++;
-                }
-
-                for (var i = 0; i < arrayOfTables.length; i++) {
-                    for (var j = 0; j < arrayOfTables[0].length; j++) {
-                        for (var y = 0; y < arrayOfTables[i][j][1].length; y++) {
-                            document.getElementById(arrayOfTables[i][j][1][y]).style.top = document.getElementById((parseInt(i+1) + "." + parseInt(j+1)).toString()).getBoundingClientRect().top + (50*y) + window.scrollY + 50 +  "px";
-                        }
-                    }
-                }
-
-            }
-
-
-        }
-
-        window.addEventListener('DOMContentLoaded', (event) => {
-
-            console.log('DOM fully loaded and parsed');
-
-            var workersAssigmentData = [];
-            @foreach(var xy in Model.WorkersAssigmentData)
-            {
-                @:workersAssigmentData.push(@Json.Serialize(xy));
-            };
-
-            for (var ii = 0; ii < workersAssigmentData.length; ii++) {
-                console.log(workersAssigmentData[ii]);
-                console.log(typeof workersAssigmentData[ii]);
-                //var savedDiv = document.getElementById(ii);
-                //var newElem = savedDiv.cloneNode();
-                //document.getElementsByClassName("main")[0].appendChild(newElem).setAttribute("id", lastAutoCreatedindexOfWorker);
-                //elmnt = document.getElementById(ii);
-                //elmnt.style.visibility = "visible";
-                //elmnt.style.width = '350px';
-                //elmnt.setAttribute("onmouseenter", "startDraging("+lastAutoCreatedindexOfWorker+")");
-                //elmnt.style.left = positionOfDiv[0] + "px";
-                //elmnt.style.top = positionOfDiv[1] + "px";
-                //lastAutoCreatedindexOfWorker++;
-                var today = new Date;
-                today = today.setHours(0, 0, 0, 0);
-                console.log(workersAssigmentData[ii].day)
-                var workerDay = new Date(workersAssigmentData[ii].day);
-                workerDay = workerDay.setHours(0, 0, 0, 0);
-                if (workerDay == today) {
-                    console.log("test");
-                };
-                console.log(today + " before fix ");
-                today = addDays(today, 1).getTime();
-                console.log(today + " fixed ");
-                if(workerDay == today) {
-                    console.log("test tomorrow");
-                };
-            };
-
-
-
-            ///// Generate workers from database
-
-
-        });
-
-        function getWidth() {
-            return Math.max(
-                //document.body.scrollWidth,
-                //document.documentElement.scrollWidth,
-                //document.body.offsetWidth,
-                //document.documentElement.offsetWidth,
-                document.documentElement.clientWidth
-            );
-        }
-
-        function getHeight() {
-            return Math.max(
-                //document.body.scrollHeight,
-                //document.documentElement.scrollHeight,
-                //document.body.offsetHeight,
-                //document.documentElement.offsetHeight,
-                document.documentElement.clientHeight
-            );
-        }
-
-        function onMouseUpdate(e, xx = null, yy = null) {
-
-            if ((e != null) && (xx == null) && (yy == null)) {
-                x = e.pageX;
-                y = e.pageY;
-
-                if (x < getWidth() * 0.01) {
-                    openNav();
-                }
-                if (x > 250) {
-                    closeNav();
-                }
-            }
-
-        }
-
-        function onMouseUpdateInTable(xx, yy) {
-
-            actualCoordinatesColumn[0] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().left;
-            actualCoordinatesColumn[1] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().top;
-            actualCoordinatesColumn[2] = xx;
-            actualCoordinatesColumn[3] = yy;
-
-            console.log(actualCoordinatesColumn[2] + "  |   " + actualCoordinatesColumn[3]);
-
-        }
-
-        function openNav() {
-            document.getElementById("mySidenav").style.visibility = "visible";
-        }
-
-        function closeNav() {
-            document.getElementById("mySidenav").style.visibility = "hidden";
-        }
-
-        function getKeyByValue(object, value) {
-            return Object.keys(object).filter(key => object[key] === value);
-        }
-
-        function getCount(parent, getChildrensChildren) {
-            var relevantChildren = 0;
-            var children = parent.childNodes.length;
-            for (var i = 0; i < children; i++) {
-                if (parent.childNodes[i].nodeType != 3) {
-                    if (getChildrensChildren)
-                        relevantChildren += getCount(parent.childNodes[i], true);
-                    relevantChildren++;
-                }
-            }
-            return relevantChildren;
-        }
-
-        function GetIfElementParentIsTable(object) {
-            if (object.parentNode.constructor.name == "HTMLDivElement") {
-                return false;
-            }
-
-            if (object.parentNode.constructor.name == "HTMLTableCellElement") {
-                return true;
-            }
-        }
-
-        function arrayRemove(arr, value) {
-
-            return arr.filter(function(ele){
-                return ele != value;
-            });
-
-        }
-
-        function addDays(day, days) {
-            var date = new Date(day.valueOf());
-            date.setDate(date.getDate() + days);
-            return date;
-        }
-
-
-
-    </script>
-
 </body>
 </html>
+<script>
+    //Make the DIV element draggagle:
+    document.addEventListener('mousemove', onMouseUpdate, false);
+    document.addEventListener('mouseenter', onMouseUpdate, false);
+    var arrayOfTables = Array(10).fill(0).map(() => Array(4).fill(0).map(() => Array(2).fill(0)));
+    for (var i = 0; i < arrayOfTables.length; i++) {
+        for (var j = 0; j < arrayOfTables[0].length; j++) {
+            arrayOfTables[i][j][1] = [];
+        }
+    }
+    var actualCoordinatesColumn = [0, 0]
+    var lastAutoCreatedindexOfWorker = @Model.AllWorkersList.Count;
+    var isFirst = false;
+
+    function startDraging(id) {
+        var savedDiv = document.getElementById(id);
+        var rect = savedDiv.getBoundingClientRect();
+        var posOfDiv = [rect.left, rect.top];
+        dragElement(document.getElementById(id), id, firstTick = true, savedDiv.cloneNode(true), posOfDiv);
+
+    }
+
+    function dragElement(elmnt, save_id, firstTick, divClone, positionOfDiv) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        var firstTickValue = firstTick;
+        var divToClone = divClone;
+        if (document.getElementById(elmnt.id + "header")) {
+            document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+        } else {
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            var parentNodeName = elmnt.parentNode.nodeName;
+            if (parentNodeName == "DIV") {
+                arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][0] -= 1;
+                var isElementExist = arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].indexOf(parseInt(save_id));
+                if (isElementExist > -1) {
+                    arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].splice(isElementExist, 1);
+                }
+            }
+
+            if (parentNodeName == "TD") {
+                isFirst = true;
+                //elmnt.setAttribute("dbWorkerId", save_id);
+            }
+            else {
+                isFirst = false;
+            }
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+
+
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            document.getElementsByClassName("main")[0].appendChild(document.getElementById(save_id));
+            elmnt = document.getElementById(save_id);
+            elmnt.style.visibility = "visible";
+            elmnt.style.width = '350px';
+            if (firstTickValue) {
+                elmnt.style.top = e.clientY + window.scrollY + "px";
+                firstTickValue = false;
+            }
+
+
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement(e) {
+            /* stop moving when mouse button is released:*/
+            e = e || window.event;
+            e.preventDefault();
+
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+
+            document.onmouseup = null;
+            document.onmousemove = null;
+
+            elmnt.style.left = actualCoordinatesColumn[0] + "px";
+            elmnt.style.top = actualCoordinatesColumn[1] + window.scrollY + "px";
+
+            if (arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].indexOf(save_id) == -1) {
+
+                arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][0] += 1;
+                arrayOfTables[parseInt(actualCoordinatesColumn[2]) - 1][parseInt(actualCoordinatesColumn[3]) - 1][1].push(save_id);
+            }
+
+            if (isFirst) {
+                var navClass = document.getElementById("sideNavTd");
+                navClass.appendChild(divToClone).setAttribute("id", lastAutoCreatedindexOfWorker);
+                var newEle = document.getElementById(lastAutoCreatedindexOfWorker);
+                newEle.setAttribute("onmouseenter", "startDraging(" + lastAutoCreatedindexOfWorker + ")");
+                newEle.style.left = positionOfDiv[0] + "px";
+                newEle.style.top = positionOfDiv[1] + "px";
+                //document.getElementById(lastAutoCreatedindexOfWorker).setAttribute("myOwnAttr", "myownEq");
+
+                lastAutoCreatedindexOfWorker++;
+            }
+
+            //console.log(parseInt(actualCoordinatesColumn[2]) + "   " + parseInt(actualCoordinatesColumn[3]));
+
+            PosibleY = [1, 2, 3, 4];
+            PosibleX = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+            var dropElementX = parseInt(actualCoordinatesColumn[2]);
+            var dropElementY = parseInt(actualCoordinatesColumn[3]);
+            var paramList = [];
+            {
+                if (dropElementX )
+            }
+
+            UpdateWorkers();
+
+
+            for (var i = 0; i < arrayOfTables.length; i++) {
+                for (var j = 0; j < arrayOfTables[0].length; j++) {
+                    for (var y = 0; y < arrayOfTables[i][j][1].length; y++) {
+                        document.getElementById(arrayOfTables[i][j][1][y]).style.top = document.getElementById((parseInt(i + 1) + "." + parseInt(j + 1)).toString()).getBoundingClientRect().top + (50 * y) + window.scrollY + 50 + "px";
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+
+        var workersAssigmentData = [];
+        @foreach(var xy in Model.WorkersAssigmentData)
+    {
+        @: workersAssigmentData.push(@Json.Serialize(xy));
+    };
+
+        for (var ii = 0; ii < workersAssigmentData.length; ii++) {
+
+            var today = new Date;
+            today = today.setHours(0, 0, 0, 0);
+            var workerDay = new Date(workersAssigmentData[ii].day);
+            workerDay = workerDay.setHours(0, 0, 0, 0);
+            workerCoordinates = [1, 1];
+
+            if (workerDay == today) {
+
+                workerCoordinates[0] = workerCoordinates[0] + 2 * (workersAssigmentData[ii].shift - 1) + workersAssigmentData[ii].reserv;
+                workerCoordinates[1] = workersAssigmentData[ii].unity;
+                var savedDiv = document.getElementById(ii);
+                var newElem = savedDiv.cloneNode(true);
+                document.getElementsByClassName("main")[0].appendChild(newElem).setAttribute("id", lastAutoCreatedindexOfWorker);
+                elmnt = document.getElementById(lastAutoCreatedindexOfWorker);
+                elmnt.style.visibility = "visible";
+                elmnt.style.width = '350px';
+                elmnt.setAttribute("onmouseenter", "startDraging(" + lastAutoCreatedindexOfWorker + ")");
+                var getTargetDivPosition = document.getElementById(workerCoordinates[0].toString() + "." + workerCoordinates[1].toString()).getBoundingClientRect();
+                elmnt.style.left = getTargetDivPosition.left + "px";
+                elmnt.setAttribute("dbWorkerId", ii);
+                arrayOfTables[parseInt(workerCoordinates[0]) - 1][parseInt(workerCoordinates[1]) - 1][1].push(lastAutoCreatedindexOfWorker);
+                lastAutoCreatedindexOfWorker++;
+            };
+
+            var tomorrow = addDays(today, 1).getTime();
+            if (workerDay == tomorrow) {
+                workerCoordinates[0] = workerCoordinates[0] + 2 * (workersAssigmentData[ii].shift - 1) + workersAssigmentData[ii].reserv;
+                workerCoordinates[1] = workersAssigmentData[ii].unity + 2;
+                var savedDiv = document.getElementById(ii);
+                var newElem = savedDiv.cloneNode(true);
+                document.getElementsByClassName("main")[0].appendChild(newElem).setAttribute("id", lastAutoCreatedindexOfWorker);
+                elmnt = document.getElementById(lastAutoCreatedindexOfWorker);
+                elmnt.style.visibility = "visible";
+                elmnt.style.width = '350px';
+                elmnt.setAttribute("onmouseenter", "startDraging(" + lastAutoCreatedindexOfWorker + ")");
+                var getTargetDivPosition = document.getElementById(workerCoordinates[0] + "." + workerCoordinates[1]).getBoundingClientRect();
+                elmnt.style.left = getTargetDivPosition.left + "px";
+                elmnt.setAttribute("dbWorkerId", ii);
+                arrayOfTables[parseInt(workerCoordinates[0]) - 1][parseInt(workerCoordinates[1]) - 1][1].push(lastAutoCreatedindexOfWorker);
+                lastAutoCreatedindexOfWorker++;
+            };
+        };
+
+        for (var i = 0; i < arrayOfTables.length; i++) {
+            for (var j = 0; j < arrayOfTables[0].length; j++) {
+                for (var y = 0; y < arrayOfTables[i][j][1].length; y++) {
+                    document.getElementById(arrayOfTables[i][j][1][y]).style.top = document.getElementById((parseInt(i + 1) + "." + parseInt(j + 1)).toString()).getBoundingClientRect().top + (50 * y) + window.scrollY + 50 + "px";
+                }
+            }
+        }
+
+    });
+
+    function getWidth() {
+        return Math.max(
+            //document.body.scrollWidth,
+            //document.documentElement.scrollWidth,
+            //document.body.offsetWidth,
+            //document.documentElement.offsetWidth,
+            document.documentElement.clientWidth
+        );
+    }
+
+    function getHeight() {
+        return Math.max(
+            //document.body.scrollHeight,
+            //document.documentElement.scrollHeight,
+            //document.body.offsetHeight,
+            //document.documentElement.offsetHeight,
+            document.documentElement.clientHeight
+        );
+    }
+
+    function UpdateWorkers(paramList, baseUrl = "Home/UpdateWorker" ) {
+        $.ajax({
+            url: 'Home/UpdateWorker?dayId=1&workerId=1&shift=1&unity=1&reserv=1',
+                type: "POST"
+            });
+    };
+
+    function UrlParamCreator(listOfParams, baseUrl) {
+        var urlString = baseUrl;
+        for (var i = 0; i < listOfParams.length; i++) {
+            if (i == 0) {
+                urlString += "?" + listOfParams[i];
+            }
+            else {
+                urlString += "&" + listOfParams[i];
+            }
+        }
+        return urlString;
+    }
+    function onMouseUpdate(e, xx = null, yy = null) {
+
+        if ((e != null) && (xx == null) && (yy == null)) {
+            x = e.pageX;
+            y = e.pageY;
+
+            if (x < getWidth() * 0.01) {
+                openNav();
+            }
+            if (x > 250) {
+                closeNav();
+            }
+        }
+
+    }
+
+    function onMouseUpdateInTable(xx, yy) {
+
+        actualCoordinatesColumn[0] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().left;
+        actualCoordinatesColumn[1] = document.getElementById((xx + "." + yy).toString()).getBoundingClientRect().top;
+        actualCoordinatesColumn[2] = xx;
+        actualCoordinatesColumn[3] = yy;
+
+    }
+
+    function openNav() {
+        document.getElementById("mySidenav").style.visibility = "visible";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.visibility = "hidden";
+    }
+
+    function getKeyByValue(object, value) {
+        return Object.keys(object).filter(key => object[key] === value);
+    }
+
+    function getCount(parent, getChildrensChildren) {
+        var relevantChildren = 0;
+        var children = parent.childNodes.length;
+        for (var i = 0; i < children; i++) {
+            if (parent.childNodes[i].nodeType != 3) {
+                if (getChildrensChildren)
+                    relevantChildren += getCount(parent.childNodes[i], true);
+                relevantChildren++;
+            }
+        }
+        return relevantChildren;
+    }
+
+    function GetIfElementParentIsTable(object) {
+        if (object.parentNode.constructor.name == "HTMLDivElement") {
+            return false;
+        }
+
+        if (object.parentNode.constructor.name == "HTMLTableCellElement") {
+            return true;
+        }
+    }
+
+    function arrayRemove(arr, value) {
+        return arr.filter(function (ele) {
+            return ele != value;
+        });
+
+    }
+
+    function addDays(day, days) {
+        var date = new Date(day.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+    }
+
+    function arrayRemove(arr, value) {
+       return arr.filter(function(ele){
+           return ele != value;
+       });
+
+    }
+
+</script>

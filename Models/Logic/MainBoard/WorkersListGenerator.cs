@@ -20,66 +20,20 @@ namespace ProjectX.Models.Logic.MainBoard
     {
         public WorkersViewModel GenerateWorkersData(WorkersContext workersContext)
         {
-            //var daysData = new Days
-            //{
-            //    Day = DateTime.Now
-            //};
-
-            //workersContext.Days.Add(daysData);
-            //daysData = new Days
-            //{
-            //    Day = DateTime.Now.AddDays(1)
-            //};
-
-            //workersContext.Days.Add(daysData);
-            //workersContext.SaveChanges();
-            //var testCheck1 = workersContext.DaysOfWork.ToList();
-
-
-
-            //var workersData = new Workers
-            //{
-            //    Name = "Antek",
-            //    Surname = "Walentynowicz",
-            //    PhoneNumber = "234432234",
-            //    Position = "Medic",
-            //    Shift = "2",
-            //    Unity = "1",
-
-            //};
-
-            //workersContext.Workers.Add(workersData);
-
-            //workersData = new Workers
-            //{
-            //    Name = "Bartosz",
-            //    Surname = "Walenrod",
-            //    PhoneNumber = "345654789",
-            //    Position = "Enginerr",
-            //    Shift = "1",
-            //    Unity = "2",
-
-            //};
-
-            //workersContext.Workers.Add(workersData);
             var dateTime = DateTime.Now;
 
-            var allWorkersList = workersContext.Workers.Select(t => t).ToList();
-            var daysOfWorkIds = workersContext.Days
-                //.Where(y => y.Day.Day == dateTime.Day || y.Day.Day == dateTime.AddDays(1).Day)
+            var allWorkersList = workersContext.Workers.Select(t => t)
+                .ToList();
+            var daysOfWorkIds = workersContext.Days.ToList();
+            var dayOfWorkData = workersContext.DaysOfWork.Select(t => t)
                 .ToList();
 
-            var dayOfWorkData = workersContext.DaysOfWork.Select(t => t).ToList();
-
-            var workersAssigmentData = dayOfWorkData.Join(daysOfWorkIds,
-                dw => dw.DayId,
-                d => d.Id,
-                (dw, d) => new { d.Day, dw.Unity, dw.Shift, dw.WorkerId })
-                .Join(allWorkersList,
-                dw => dw.WorkerId,
-                wc => wc.Id,
-                (dw, wc) => new { wc.Id, wc.Name, wc.Surname, wc.Position, dw.Day, dw.Shift, dw.Unity })
-                .Select( x => new WorkersAssigmentData { Id = x.Id, Name = x.Name, Surname = x.Surname, Position = x.Position, Shift = x.Shift, Unity = x.Unity, Day = x.Day })
+            var workersAssigmentData = dayOfWorkData
+                .Join(daysOfWorkIds, dw => dw.DayId, d => d.Id,
+                (dw, d) => new { d.Day, dw.Unity, dw.Shift, dw.WorkerId, dw.Reserv })
+                .Join(allWorkersList,dw => dw.WorkerId,wc => wc.Id,
+                (dw, wc) => new { wc.Id, wc.Name, wc.Surname, wc.Position, dw.Day, dw.Shift, dw.Unity, dw.Reserv})
+                .Select( x => new WorkersAssigmentData { Id = x.Id, Name = x.Name, Surname = x.Surname, Position = x.Position, Shift = x.Shift, Unity = x.Unity, Day = x.Day, Reserv = x.Reserv })
                 .ToList();
 
             return new WorkersViewModel

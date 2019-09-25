@@ -14,14 +14,17 @@ namespace ProjectX.Controllers
     public class HomeController : Controller
     {
         private readonly IGenerateWorkersList _generateWorkersData;
+        private readonly IWorkerBoardUpdate _workerBoardUpdate;
         private readonly WorkersContext _context;
 
         public HomeController(
             IGenerateWorkersList generateWorkersList,
+            IWorkerBoardUpdate workerBoardUpdate,
             WorkersContext context
             )
         {
             _generateWorkersData = generateWorkersList;
+            _workerBoardUpdate = workerBoardUpdate;
             _context = context;
         }
         public IActionResult Index()
@@ -30,7 +33,13 @@ namespace ProjectX.Controllers
 
             return PartialView(viewModel);
         }
-
+        [HttpPost]
+        public IActionResult UpdateWorker(int dayId, int workerId, int shift, int unity, int resevr)
+        {
+            // SET THAT DAY ID TO DATE 
+            _workerBoardUpdate.UpdateWorkersBoard(_context, dayId, workerId, shift, unity, resevr);
+            return Content("Yes");
+        }
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

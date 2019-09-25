@@ -12,5 +12,6 @@ namespace ProjectX.Models
         public int DayId { get; set; }
         public int Unity { get; set; }
         public int Shift { get; set; }
+        public int Reserv { get; set; }
     }
 }
